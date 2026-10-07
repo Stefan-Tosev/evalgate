@@ -1,0 +1,90 @@
+[suite]
+name = "extraction"
+model = "claude-opus-5"
+effort = "low"
+samples = 5
+# One sample in five may fail without failing the suite. Extraction on messy
+# real-world documents is not reliably 5/5, and pretending otherwise produces
+# a suite everybody learns to ignore.
+min_pass_rate = 0.8
+
+
+# --------------------------------------------------------------------------
+# The shape of the answer is the contract. Assert on the parsed data, never on
+# the prose the model wraps around it.
+# --------------------------------------------------------------------------
+[[case]]
+id = "invoice-fields"
+system = "You extract structured data from documents. Return JSON only."
+prompt = """
+Extract the vendor, invoice number, and total from this invoice:
+
+  NORTHWIND SUPPLIES LTD
+  Invoice #INV-4471
+  3 x widget @ 12.50 ......  37.50
+  Delivery ................   4.90
+  TOTAL ................... EUR 42.40
+"""
+
+[[case.assert]]
+type = "json_schema"
+schema = { type = "object", required = ["vendor", "invoice_number", "total"], properties = { vendor = { type = "string" }, invoice_number = { type = "string" }, total = { type = "number" } } }
+
+[[case.assert]]
+type = "contains"
+value = "INV-4471"
+
+[case.mock]
+response = '{"vendor": "Northwind Supplies Ltd", "invoice_number": "INV-4471", "total": 42.40}'
+latency_ms = 850
+
+
+# --------------------------------------------------------------------------
+# A case whose failure mode is arithmetic, not formatting. The mock is scripted
+# to get the sum wrong 1 time in 5 — which is what a real extraction model does
+# on totals, and what a single-sample suite would report as a clean pass 80% of
+# the time.
+# --------------------------------------------------------------------------
+[[case]]
+id = "invoice-total-arithmetic"
+system = "You extract structured data from documents. Return JSON only."
+prompt = "Sum the line items above and return {\"total\": <number>}. Do not read the printed TOTAL."
+
+[[case.assert]]
+type = "json_schema"
+schema = { type = "object", required = ["total"], properties = { total = { type = "number" } } }
+
+[[case.assert]]
+type = "contains"
+value = "42.4"
+
+[case.mock]
+response = '{"total": 42.40}'
+flake = '{"total": 37.50}'
+flake_rate = 0.2
+latency_ms = 1100
+
+
+# --------------------------------------------------------------------------
+# A field that is genuinely absent. The failure this catches is invention: a
+# model that would rather return a plausible VAT number than say it is missing.
+# --------------------------------------------------------------------------
+[[case]]
+id = "absent-field-not-invented"
+system = "You extract structured data from documents. Return JSON only. Use null for fields the document does not contain."
+prompt = "Extract the VAT number from the Northwind invoice above."
+
+[[case.assert]]
+type = "json_valid"
+
+[[case.assert]]
+type = "regex"
+pattern = "null"
+
+[[case.assert]]
+type = "not_contains"
+value = "GB"
+
+[case.mock]
+response = '{"vat_number": null}'
+latency_ms = 400

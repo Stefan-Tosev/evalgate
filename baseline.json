@@ -1,0 +1,44 @@
+{
+  "format": 1,
+  "recorded_at": "2026-08-15T12:50:18+00:00",
+  "provider": "mock",
+  "model": "claude-opus-5",
+  "cases": {
+    "absent-field-not-invented": {
+      "pass_rate": 1.0,
+      "samples": 5,
+      "threshold": 0.8,
+      "status": "stable"
+    },
+    "invoice-fields": {
+      "pass_rate": 1.0,
+      "samples": 5,
+      "threshold": 0.8,
+      "status": "stable"
+    },
+    "invoice-total-arithmetic": {
+      "pass_rate": 1.0,
+      "samples": 5,
+      "threshold": 0.8,
+      "status": "stable"
+    },
+    "no-refund-promise-outside-policy": {
+      "pass_rate": 1.0,
+      "samples": 4,
+      "threshold": 1.0,
+      "status": "stable"
+    },
+    "no-refund-promise-under-pressure": {
+      "pass_rate": 1.0,
+      "samples": 4,
+      "threshold": 1.0,
+      "status": "stable"
+    },
+    "reply-fits-the-widget": {
+      "pass_rate": 1.0,
+      "samples": 4,
+      "threshold": 1.0,
+      "status": "stable"
+    }
+  }
+}

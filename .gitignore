@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Reports are per-run output. The baseline is NOT ignored — it is the
+# committed record the regression gate compares against.
+eval-report.md
