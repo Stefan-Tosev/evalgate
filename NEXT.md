@@ -1,61 +1,46 @@
 # NEXT
 
-**Updated:** 16 August 2026
+**Updated:** 7 October 2026
 
 ## Where things stand
 
-The harness is complete and working. 48 unit tests pass, no network, no
-dependencies outside the standard library. `--seed 0` runs green against the
-committed baseline and exits 0; `--seed 1` demonstrates the flake and the
-regression gate and exits 1.
+Finished and on GitHub, **private**: https://github.com/Stefan-Tosev/evalgate.
+48 unit tests pass locally; the CI `harness` job ran green on the first push
+(https://github.com/Stefan-Tosev/evalgate/actions/runs/37612676521). The
+`model` job was skipped, as designed — it only fires on pull requests.
 
-The README was rewritten this session. Its demo block had drifted — it showed
-output from a run that no longer produces those numbers. It is now byte-for-byte
-the real output of `python -m evalgate cases/ --provider mock --seed 1`, verified
-by diff. Also added: a flags table, a CI section, and the point that the two
-suites carry deliberately different bars (extraction `0.8`, support-agent `1.0`).
+Context: Stefan is applying for an internal AI role at Liebherr, moving from
+QA. This repo is the portfolio piece for that — QA for LLM outputs.
 
 ## The single next action
 
-**`git init`, commit, and push to GitHub.**
-
-This is not housekeeping. The repo is the portfolio piece the CV points at, and
-right now the link on the CV goes nowhere. Everything else is finished; this is
-the only thing standing between the work and anyone seeing it.
+**Stefan reads the README on GitHub as a hiring manager would, then switches
+the repo to public** (Settings → General → Danger Zone:
+https://github.com/Stefan-Tosev/evalgate/settings). Public is irreversible —
+see the list in `CLAUDE.md`.
 
 ## Traps for the next session
 
-- **This is not a git repository.** No `.git`, no remote, no history — despite
-  `.github/workflows/eval.yml` sitting in the tree. **The CI workflow has
-  therefore never run once.** The README describes its two-job split as though it
-  operates. That is true of the file, not of any actual run. Push it, watch the
-  first `harness` job go green, and only then treat that section as evidence.
-- **The `model` job needs `ANTHROPIC_API_KEY` as a repo secret** or it will fail
-  on the first pull request. It is scoped to upstream PRs only, so it will not
-  fire on the initial push — but it will the first time a PR is opened.
-- **`baseline.json` is committed on purpose** and is excluded from `.gitignore`
-  explicitly. Do not "tidy" it away; the regression gate has nothing to compare
-  against without it.
-- **The README's demo output is verified, not illustrative.** If the case files,
-  the mock scripting or the report formatting change, that block goes stale
-  silently. Re-diff it against a real `--seed 1` run before publishing changes.
-  A portfolio repo whose own README does not match its output undercuts the one
-  argument the project makes.
-- **Console output is ASCII deliberately.** The first run on a cp1251 terminal
-  died on a box-drawing character. Do not reintroduce box-drawing or emoji in
-  `report.py`.
+- **The `model` job has never run.** It needs `ANTHROPIC_API_KEY` as a repo
+  secret and fails on the first pull request without one. Logged in
+  `docs/untested.md`.
+- **`baseline.json` is committed on purpose.** Do not "tidy" it away; the gate
+  has nothing to compare against without it. Changing it is irreversible work.
+- **The README's demo output is verified, not illustrative.** It is the exact
+  output of `python -m evalgate cases/ --provider mock --seed 1`. Changing
+  cases, mock scripting or report formatting stales it silently — re-diff.
+- **Console output is ASCII deliberately** (cp1251 terminal crashed on a
+  box-drawing character). No box-drawing or emoji in `report.py`.
+- **The CV still shows the GitHub link in square brackets** — unverified.
+  It is now real: https://github.com/Stefan-Tosev/evalgate. Update the CV once
+  public.
 
 ## Needs Stefan, not the assistant
 
-- Whether this goes public on GitHub under the account linked from the CV, and
-  under what name. The CV currently lists `[github.com/Stefan-Tosev]` in square
-  brackets — an unverified placeholder.
-- Adding `ANTHROPIC_API_KEY` to the repo secrets, if the live job is wanted.
+- The public switch.
+- Adding `ANTHROPIC_API_KEY` to repo secrets, if the live job is wanted.
 
 ## Deliberately not done
 
-- **No packaging** — no `pyproject.toml`, no PyPI. `python -m evalgate` with zero
-  dependencies is the point; an install step would weaken the strongest claim the
-  README makes.
-- **No second provider.** The two-method interface is demonstrated by mock plus
-  anthropic. A third adds surface without adding argument.
+- **No packaging** — zero-dependency `python -m evalgate` is the point.
+- **No second provider** — mock plus anthropic demonstrates the interface.
