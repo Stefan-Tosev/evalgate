@@ -9,8 +9,8 @@ Finished and on GitHub, **private**: https://github.com/Stefan-Tosev/evalgate.
 (https://github.com/Stefan-Tosev/evalgate/actions/runs/37612676521). The
 `model` job was skipped, as designed — it only fires on pull requests.
 
-Context: Stefan is applying for an internal AI role at Liebherr, moving from
-QA. This repo is the portfolio piece for that — QA for LLM outputs.
+Context: a portfolio piece — QA for LLM outputs, built the way a test engineer
+would build it.
 
 ## The single next action
 
